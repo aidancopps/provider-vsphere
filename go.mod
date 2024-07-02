@@ -1,4 +1,4 @@
-module github.com/upbound/upjet-provider-template
+module github.com/aidan/provider-vsphere
 
 go 1.19
 
