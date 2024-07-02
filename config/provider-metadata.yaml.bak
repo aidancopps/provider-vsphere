@@ -689,7 +689,7 @@ resources:
         importStatements: []
     vsphere_content_library:
         subCategory: Virtual Machine
-        description: Provides a vSphere content library. Content libraries allow you to manage and share virtual machines, vApp vspheres, and other types of files. Content libraries enable you to share content across vCenter Server instances in the same or different locations.
+        description: Provides a vSphere content library. Content libraries allow you to manage and share virtual machines, vApp templates, and other types of files. Content libraries enable you to share content across vCenter Server instances in the same or different locations.
         name: vsphere_content_library
         title: vsphere_content_library
         examples:
@@ -779,7 +779,7 @@ resources:
             source_uuid: '- (Optional) Virtual machine UUID to clone to content library.'
             type: |-
                 - (Optional) Type of content library item.
-                One of "ovf", "iso", or "vm-vsphere". Default: ovf.
+                One of "ovf", "iso", or "vm-template". Default: ovf.
         importStatements: []
     vsphere_custom_attribute:
         subCategory: Inventory
@@ -2709,40 +2709,40 @@ resources:
                           ]
                         }
                       ],
-                      "vsphere_uuid": "${data.vsphere_virtual_machine.vsphere.id}"
+                      "template_uuid": "${data.vsphere_virtual_machine.template.id}"
                     }
                   ],
                   "datastore_id": "${data.vsphere_datastore.datastore.id}",
                   "disk": [
                     {
                       "label": "disk0",
-                      "size": "${data.vsphere_virtual_machine.vsphere.disks.0.size}",
-                      "thin_provisioned": "${data.vsphere_virtual_machine.vsphere.disks.0.thin_provisioned}"
+                      "size": "${data.vsphere_virtual_machine.template.disks.0.size}",
+                      "thin_provisioned": "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
                     }
                   ],
-                  "guest_id": "${data.vsphere_virtual_machine.vsphere.guest_id}",
+                  "guest_id": "${data.vsphere_virtual_machine.template.guest_id}",
                   "memory": 1024,
                   "name": "foo",
                   "network_interface": [
                     {
-                      "adapter_type": "${data.vsphere_virtual_machine.vsphere.network_interface_types[0]}",
+                      "adapter_type": "${data.vsphere_virtual_machine.template.network_interface_types[0]}",
                       "network_id": "${data.vsphere_network.network.id}"
                     }
                   ],
                   "num_cpus": 1,
                   "resource_pool_id": "${data.vsphere_compute_cluster.cluster.resource_pool_id}",
-                  "scsi_type": "${data.vsphere_virtual_machine.vsphere.scsi_type}"
+                  "scsi_type": "${data.vsphere_virtual_machine.template.scsi_type}"
                 }
               references:
-                clone.vsphere_uuid: data.vsphere_virtual_machine.vsphere.id
+                clone.template_uuid: data.vsphere_virtual_machine.template.id
                 datastore_id: data.vsphere_datastore.datastore.id
-                disk.size: data.vsphere_virtual_machine.vsphere.disks.0.size
-                disk.thin_provisioned: data.vsphere_virtual_machine.vsphere.disks.0.thin_provisioned
-                guest_id: data.vsphere_virtual_machine.vsphere.guest_id
-                network_interface.adapter_type: data.vsphere_virtual_machine.vsphere.network_interface_types[0]
+                disk.size: data.vsphere_virtual_machine.template.disks.0.size
+                disk.thin_provisioned: data.vsphere_virtual_machine.template.disks.0.thin_provisioned
+                guest_id: data.vsphere_virtual_machine.template.guest_id
+                network_interface.adapter_type: data.vsphere_virtual_machine.template.network_interface_types[0]
                 network_interface.network_id: data.vsphere_network.network.id
                 resource_pool_id: data.vsphere_compute_cluster.cluster.resource_pool_id
-                scsi_type: data.vsphere_virtual_machine.vsphere.scsi_type
+                scsi_type: data.vsphere_virtual_machine.template.scsi_type
             - name: vm
               manifest: |-
                 {
@@ -2751,11 +2751,11 @@ resources:
                       "id": "${data.vsphere_guest_os_customization.linux.id}"
                     }
                   ],
-                  "vsphere_uuid": "${data.vsphere_virtual_machine.vsphere.id}"
+                  "template_uuid": "${data.vsphere_virtual_machine.template.id}"
                 }
               references:
                 customization_spec.id: data.vsphere_guest_os_customization.linux.id
-                vsphere_uuid: data.vsphere_virtual_machine.vsphere.id
+                template_uuid: data.vsphere_virtual_machine.template.id
             - name: vmFromRemoteOvf
               manifest: |-
                 {
@@ -2862,12 +2862,12 @@ resources:
                             "network_id": "${network_interface.value}"
                           }
                         ],
-                        "for_each": "${data.vsphere_ovf_vm_vsphere.ovfRemote.ovf_network_map}"
+                        "for_each": "${data.vsphere_ovf_vm_template.ovfRemote.ovf_network_map}"
                       }
                     ]
                   },
-                  "firmware": "${data.vsphere_ovf_vm_vsphere.ovfRemote.firmware}",
-                  "guest_id": "${data.vsphere_ovf_vm_vsphere.ovfRemote.guest_id}",
+                  "firmware": "${data.vsphere_ovf_vm_template.ovfRemote.firmware}",
+                  "guest_id": "${data.vsphere_ovf_vm_template.ovfRemote.guest_id}",
                   "host_system_id": "${data.vsphere_host.host.id}",
                   "lifecycle": [
                     {
@@ -2876,24 +2876,24 @@ resources:
                       ]
                     }
                   ],
-                  "memory": "${data.vsphere_ovf_vm_vsphere.ovfRemote.memory}",
+                  "memory": "${data.vsphere_ovf_vm_template.ovfRemote.memory}",
                   "name": "ubuntu-server-cloud-image-01",
-                  "num_cores_per_socket": "${data.vsphere_ovf_vm_vsphere.ovfRemote.num_cores_per_socket}",
-                  "num_cpus": "${data.vsphere_ovf_vm_vsphere.ovfRemote.num_cpus}",
+                  "num_cores_per_socket": "${data.vsphere_ovf_vm_template.ovfRemote.num_cores_per_socket}",
+                  "num_cpus": "${data.vsphere_ovf_vm_template.ovfRemote.num_cpus}",
                   "ovf_deploy": [
                     {
                       "allow_unverified_ssl_cert": false,
-                      "disk_provisioning": "${data.vsphere_ovf_vm_vsphere.ovfRemote.disk_provisioning}",
-                      "ovf_network_map": "${data.vsphere_ovf_vm_vsphere.ovfRemote.ovf_network_map}",
-                      "remote_ovf_url": "${data.vsphere_ovf_vm_vsphere.ovfRemote.remote_ovf_url}"
+                      "disk_provisioning": "${data.vsphere_ovf_vm_template.ovfRemote.disk_provisioning}",
+                      "ovf_network_map": "${data.vsphere_ovf_vm_template.ovfRemote.ovf_network_map}",
+                      "remote_ovf_url": "${data.vsphere_ovf_vm_template.ovfRemote.remote_ovf_url}"
                     },
                     {
-                      "ovf_network_map": "${data.vsphere_ovf_vm_vsphere.ovfRemote.ovf_network_map}",
+                      "ovf_network_map": "${data.vsphere_ovf_vm_template.ovfRemote.ovf_network_map}",
                       "remote_ovf_url": "https://cloud-images.ubuntu.com/releases/xx.xx/release/ubuntu-xx.xx-server-cloudimg-amd64.ova"
                     }
                   ],
                   "resource_pool_id": "${data.vsphere_resource_pool.default.id}",
-                  "scsi_type": "${data.vsphere_ovf_vm_vsphere.ovfRemote.scsi_type}",
+                  "scsi_type": "${data.vsphere_ovf_vm_template.ovfRemote.scsi_type}",
                   "vapp": [
                     {
                       "properties": {
@@ -2912,18 +2912,18 @@ resources:
                 datacenter_id: data.vsphere_datacenter.datacenter.id
                 datastore_id: data.vsphere_datastore.datastore.id
                 dynamic.content.network_id: network_interface.value
-                dynamic.for_each: data.vsphere_ovf_vm_vsphere.ovfRemote.ovf_network_map
-                firmware: data.vsphere_ovf_vm_vsphere.ovfRemote.firmware
-                guest_id: data.vsphere_ovf_vm_vsphere.ovfRemote.guest_id
+                dynamic.for_each: data.vsphere_ovf_vm_template.ovfRemote.ovf_network_map
+                firmware: data.vsphere_ovf_vm_template.ovfRemote.firmware
+                guest_id: data.vsphere_ovf_vm_template.ovfRemote.guest_id
                 host_system_id: data.vsphere_host.host.id
-                memory: data.vsphere_ovf_vm_vsphere.ovfRemote.memory
-                num_cores_per_socket: data.vsphere_ovf_vm_vsphere.ovfRemote.num_cores_per_socket
-                num_cpus: data.vsphere_ovf_vm_vsphere.ovfRemote.num_cpus
-                ovf_deploy.disk_provisioning: data.vsphere_ovf_vm_vsphere.ovfRemote.disk_provisioning
-                ovf_deploy.ovf_network_map: data.vsphere_ovf_vm_vsphere.ovfRemote.ovf_network_map
-                ovf_deploy.remote_ovf_url: data.vsphere_ovf_vm_vsphere.ovfRemote.remote_ovf_url
+                memory: data.vsphere_ovf_vm_template.ovfRemote.memory
+                num_cores_per_socket: data.vsphere_ovf_vm_template.ovfRemote.num_cores_per_socket
+                num_cpus: data.vsphere_ovf_vm_template.ovfRemote.num_cpus
+                ovf_deploy.disk_provisioning: data.vsphere_ovf_vm_template.ovfRemote.disk_provisioning
+                ovf_deploy.ovf_network_map: data.vsphere_ovf_vm_template.ovfRemote.ovf_network_map
+                ovf_deploy.remote_ovf_url: data.vsphere_ovf_vm_template.ovfRemote.remote_ovf_url
                 resource_pool_id: data.vsphere_resource_pool.default.id
-                scsi_type: data.vsphere_ovf_vm_vsphere.ovfRemote.scsi_type
+                scsi_type: data.vsphere_ovf_vm_template.ovfRemote.scsi_type
             - name: vmFromLocalOvf
               manifest: |-
                 {
@@ -2942,12 +2942,12 @@ resources:
                             "network_id": "${network_interface.value}"
                           }
                         ],
-                        "for_each": "${data.vsphere_ovf_vm_vsphere.ovfLocal.ovf_network_map}"
+                        "for_each": "${data.vsphere_ovf_vm_template.ovfLocal.ovf_network_map}"
                       }
                     ]
                   },
-                  "firmware": "${data.vsphere_ovf_vm_vsphere.ovfLocal.firmware}",
-                  "guest_id": "${data.vsphere_ovf_vm_vsphere.ovfLocal.guest_id}",
+                  "firmware": "${data.vsphere_ovf_vm_template.ovfLocal.firmware}",
+                  "guest_id": "${data.vsphere_ovf_vm_template.ovfLocal.guest_id}",
                   "host_system_id": "${data.vsphere_host.host.id}",
                   "lifecycle": [
                     {
@@ -2956,20 +2956,20 @@ resources:
                       ]
                     }
                   ],
-                  "memory": "${data.vsphere_ovf_vm_vsphere.ovfLocal.memory}",
+                  "memory": "${data.vsphere_ovf_vm_template.ovfLocal.memory}",
                   "name": "ubuntu-server-cloud-image-02",
-                  "num_cores_per_socket": "${data.vsphere_ovf_vm_vsphere.ovfLocal.num_cores_per_socket}",
-                  "num_cpus": "${data.vsphere_ovf_vm_vsphere.ovfLocal.num_cpus}",
+                  "num_cores_per_socket": "${data.vsphere_ovf_vm_template.ovfLocal.num_cores_per_socket}",
+                  "num_cpus": "${data.vsphere_ovf_vm_template.ovfLocal.num_cpus}",
                   "ovf_deploy": [
                     {
                       "allow_unverified_ssl_cert": false,
-                      "disk_provisioning": "${data.vsphere_ovf_vm_vsphere.ovfLocal.disk_provisioning}",
-                      "local_ovf_path": "${data.vsphere_ovf_vm_vsphere.ovfLocal.local_ovf_path}",
-                      "ovf_network_map": "${data.vsphere_ovf_vm_vsphere.ovfLocal.ovf_network_map}"
+                      "disk_provisioning": "${data.vsphere_ovf_vm_template.ovfLocal.disk_provisioning}",
+                      "local_ovf_path": "${data.vsphere_ovf_vm_template.ovfLocal.local_ovf_path}",
+                      "ovf_network_map": "${data.vsphere_ovf_vm_template.ovfLocal.ovf_network_map}"
                     }
                   ],
                   "resource_pool_id": "${data.vsphere_resource_pool.default.id}",
-                  "scsi_type": "${data.vsphere_ovf_vm_vsphere.ovfLocal.scsi_type}",
+                  "scsi_type": "${data.vsphere_ovf_vm_template.ovfLocal.scsi_type}",
                   "vapp": [
                     {
                       "properties": {
@@ -2988,46 +2988,46 @@ resources:
                 datacenter_id: data.vsphere_datacenter.datacenter.id
                 datastore_id: data.vsphere_datastore.datastore.id
                 dynamic.content.network_id: network_interface.value
-                dynamic.for_each: data.vsphere_ovf_vm_vsphere.ovfLocal.ovf_network_map
-                firmware: data.vsphere_ovf_vm_vsphere.ovfLocal.firmware
-                guest_id: data.vsphere_ovf_vm_vsphere.ovfLocal.guest_id
+                dynamic.for_each: data.vsphere_ovf_vm_template.ovfLocal.ovf_network_map
+                firmware: data.vsphere_ovf_vm_template.ovfLocal.firmware
+                guest_id: data.vsphere_ovf_vm_template.ovfLocal.guest_id
                 host_system_id: data.vsphere_host.host.id
-                memory: data.vsphere_ovf_vm_vsphere.ovfLocal.memory
-                num_cores_per_socket: data.vsphere_ovf_vm_vsphere.ovfLocal.num_cores_per_socket
-                num_cpus: data.vsphere_ovf_vm_vsphere.ovfLocal.num_cpus
-                ovf_deploy.disk_provisioning: data.vsphere_ovf_vm_vsphere.ovfLocal.disk_provisioning
-                ovf_deploy.local_ovf_path: data.vsphere_ovf_vm_vsphere.ovfLocal.local_ovf_path
-                ovf_deploy.ovf_network_map: data.vsphere_ovf_vm_vsphere.ovfLocal.ovf_network_map
+                memory: data.vsphere_ovf_vm_template.ovfLocal.memory
+                num_cores_per_socket: data.vsphere_ovf_vm_template.ovfLocal.num_cores_per_socket
+                num_cpus: data.vsphere_ovf_vm_template.ovfLocal.num_cpus
+                ovf_deploy.disk_provisioning: data.vsphere_ovf_vm_template.ovfLocal.disk_provisioning
+                ovf_deploy.local_ovf_path: data.vsphere_ovf_vm_template.ovfLocal.local_ovf_path
+                ovf_deploy.ovf_network_map: data.vsphere_ovf_vm_template.ovfLocal.ovf_network_map
                 resource_pool_id: data.vsphere_resource_pool.default.id
-                scsi_type: data.vsphere_ovf_vm_vsphere.ovfLocal.scsi_type
+                scsi_type: data.vsphere_ovf_vm_template.ovfLocal.scsi_type
             - name: vm
               manifest: |-
                 {
                   "clone": [
                     {
-                      "vsphere_uuid": "${data.vsphere_virtual_machine.vsphere_from_ovf.id}"
+                      "template_uuid": "${data.vsphere_virtual_machine.template_from_ovf.id}"
                     }
                   ],
                   "datastore_id": "${data.vsphere_datastore.datastore.id}",
                   "disk": [
                     {
                       "name": "disk0",
-                      "size": "${data.vsphere_virtual_machine.vsphere_from_ovf.disks.0.size}",
-                      "thin_provisioned": "${data.vsphere_virtual_machine.vsphere_from_ovf.disks.0.thin_provisioned}"
+                      "size": "${data.vsphere_virtual_machine.template_from_ovf.disks.0.size}",
+                      "thin_provisioned": "${data.vsphere_virtual_machine.template_from_ovf.disks.0.thin_provisioned}"
                     }
                   ],
-                  "guest_id": "${data.vsphere_virtual_machine.vsphere.guest_id}",
+                  "guest_id": "${data.vsphere_virtual_machine.template.guest_id}",
                   "memory": 1024,
                   "name": "foo",
                   "network_interface": [
                     {
-                      "adapter_type": "${data.vsphere_virtual_machine.vsphere.network_interface_types[0]}",
+                      "adapter_type": "${data.vsphere_virtual_machine.template.network_interface_types[0]}",
                       "network_id": "${data.vsphere_network.network.id}"
                     }
                   ],
                   "num_cpus": 2,
                   "resource_pool_id": "${data.vsphere_compute_cluster.cluster.resource_pool_id}",
-                  "scsi_type": "${data.vsphere_virtual_machine.vsphere.scsi_type}",
+                  "scsi_type": "${data.vsphere_virtual_machine.template.scsi_type}",
                   "vapp": [
                     {
                       "properties": {
@@ -3045,15 +3045,15 @@ resources:
                   ]
                 }
               references:
-                clone.vsphere_uuid: data.vsphere_virtual_machine.vsphere_from_ovf.id
+                clone.template_uuid: data.vsphere_virtual_machine.template_from_ovf.id
                 datastore_id: data.vsphere_datastore.datastore.id
-                disk.size: data.vsphere_virtual_machine.vsphere_from_ovf.disks.0.size
-                disk.thin_provisioned: data.vsphere_virtual_machine.vsphere_from_ovf.disks.0.thin_provisioned
-                guest_id: data.vsphere_virtual_machine.vsphere.guest_id
-                network_interface.adapter_type: data.vsphere_virtual_machine.vsphere.network_interface_types[0]
+                disk.size: data.vsphere_virtual_machine.template_from_ovf.disks.0.size
+                disk.thin_provisioned: data.vsphere_virtual_machine.template_from_ovf.disks.0.thin_provisioned
+                guest_id: data.vsphere_virtual_machine.template.guest_id
+                network_interface.adapter_type: data.vsphere_virtual_machine.template.network_interface_types[0]
                 network_interface.network_id: data.vsphere_network.network.id
                 resource_pool_id: data.vsphere_compute_cluster.cluster.resource_pool_id
-                scsi_type: data.vsphere_virtual_machine.vsphere.scsi_type
+                scsi_type: data.vsphere_virtual_machine.template.scsi_type
             - name: vm
               manifest: |-
                 {
@@ -3275,7 +3275,7 @@ resources:
                   ],
                   "clone": [
                     {
-                      "vsphere_uuid": "${data.vsphere_virtual_machine.vsphere_from_ovf.id}"
+                      "template_uuid": "${data.vsphere_virtual_machine.template_from_ovf.id}"
                     }
                   ],
                   "vapp": [
@@ -3287,13 +3287,13 @@ resources:
                   ]
                 }
               references:
-                clone.vsphere_uuid: data.vsphere_virtual_machine.vsphere_from_ovf.id
+                clone.template_uuid: data.vsphere_virtual_machine.template_from_ovf.id
             - name: vm
               manifest: |-
                 {
                   "clone": [
                     {
-                      "vsphere_uuid": "${data.vsphere_virtual_machine.vsphere_from_ovf.id}"
+                      "template_uuid": "${data.vsphere_virtual_machine.template_from_ovf.id}"
                     }
                   ],
                   "vapp": [
@@ -3305,7 +3305,7 @@ resources:
                   ]
                 }
               references:
-                clone.vsphere_uuid: data.vsphere_virtual_machine.vsphere_from_ovf.id
+                clone.template_uuid: data.vsphere_virtual_machine.template_from_ovf.id
             - name: vm
               manifest: |-
                 {
@@ -3339,7 +3339,7 @@ resources:
                 disk.datastore_id: data.vsphere_datastore.pinned_datastore.id
         argumentDocs:
             "0": . If no storage controllers are discovered, the virtual machine is not eligible for import. For maximum compatibility, ensure that the virtual machine has the exact number of storage controllers needed and set the storage controller count accordingly.
-            "1": SCSI controller, and all disks in the vsphere should reside on the single, primary controller.
+            "1": SCSI controller, and all disks in the template should reside on the single, primary controller.
             alternate_guest_name: '- (Optional) The guest name for the operating system when guest_id is otherGuest or otherGuest64.'
             annotation: '- (Optional) A user-provided description of the virtual machine.'
             bandwidth_*: options on the network interface are not permitted.
@@ -3351,10 +3351,10 @@ resources:
             cdrom.datastore_id: '- (Optional) The datastore ID that on which the ISO is located. Required for using a datastore ISO. Conflicts with client_device.'
             cdrom.path: '- (Optional) The path to the ISO file. Required for using a datastore ISO. Conflicts with client_device.'
             change_version: '- A unique identifier for a given version of the last configuration was applied.'
-            clone: '- (Optional) When specified, the virtual machine will be created as a clone of a specified vsphere. Optional customization options can be submitted for the resource. See creating a virtual machine from a vsphere for more information.'
+            clone: '- (Optional) When specified, the virtual machine will be created as a clone of a specified template. Optional customization options can be submitted for the resource. See creating a virtual machine from a template for more information.'
             clone.customize: '- (Optional) The customization spec for this clone. This allows the user to configure the virtual machine post-clone. For more details, see virtual machine customizations.'
-            clone.linked_clone: '- (Optional) Clone the virtual machine from a snapshot or a vsphere. Default: false.'
-            clone.vsphere_uuid: '- (Required) The UUID of the source virtual machine or vsphere.'
+            clone.linked_clone: '- (Optional) Clone the virtual machine from a snapshot or a template. Default: false.'
+            clone.template_uuid: '- (Required) The UUID of the source virtual machine or template.'
             clone.timeout: '- (Optional) The timeout, in minutes, to wait for the cloning process to complete. Default: 30 minutes.'
             cpu_hot_add_enabled: '- (Optional) Allow CPUs to be added to the virtual machine while it is powered on.'
             cpu_hot_remove_enabled: '- (Optional) Allow CPUs to be removed to the virtual machine while it is powered on.'
@@ -3364,7 +3364,7 @@ resources:
             cpu_share_count: '- (Optional) The number of CPU shares allocated to the virtual machine when the cpu_share_level is custom.'
             cpu_share_level: '- (Optional) The allocation level for the virtual machine CPU resources. One of high, low, normal, or custom. Default: custom.'
             custom_attributes: '- (Optional) Map of custom attribute ids to attribute value strings to set for virtual machine. Please refer to the vsphere_custom_attributes resource for more information on setting custom attributes.'
-            datacenter_id: '- (Optional) The datacenter ID. Required only when deploying an OVF/OVA vsphere.'
+            datacenter_id: '- (Optional) The datacenter ID. Required only when deploying an OVF/OVA template.'
             datastore_cluster_id: '- (Optional) The managed object reference ID of the datastore cluster in which to place the virtual machine. This setting applies to entire virtual machine and implies that you wish to use vSphere Storage DRS with the virtual machine. See the section on virtual machine migration for more information on modifying this value.'
             datastore_id: '- (Optional) The managed object reference ID of the datastore in which to place the virtual machine. The virtual machine configuration files is placed here, along with any virtual disks that are created where a datastore is not explicitly specified. See the section on virtual machine migration for more information on modifying this value.'
             default_ip_address: '- The IP address selected by Terraform to be used with any [provisioners][tf-docs-provisioners] configured on this resource. When possible, this is the first IPv4 address that is reachable through the default gateway configured on the machine, then the first reachable IPv6 address, and then the first general discovered address if neither exists. If  VMware Tools is not running on the virtual machine, or if the virtual machine is powered off, this value will be blank.'
@@ -3404,7 +3404,7 @@ resources:
             extra_config.host_system_id: '- (Optional) The managed object reference ID of a host on which to place the virtual machine. See the section on virtual machine migration for more information on modifying this value. When using a vSphere cluster, if a host_system_id is not supplied, vSphere will select a host in the cluster to place the virtual machine, according to any defaults or vSphere DRS placement policies.'
             extra_config.name: '- (Required) The name of the virtual machine.'
             extra_config.network_interface: '- (Required) A specification for a virtual NIC on the virtual machine. See network interface options for more information.'
-            extra_config.ovf_deploy: '- (Optional) When specified, the virtual machine will be deployed from the provided OVF/OVA vsphere. See creating a virtual machine from an OVF/OVA vsphere for more information.'
+            extra_config.ovf_deploy: '- (Optional) When specified, the virtual machine will be deployed from the provided OVF/OVA template. See creating a virtual machine from an OVF/OVA template for more information.'
             extra_config.pci_device_id: '- (Optional) List of host PCI device IDs in which to create PCI passthroughs.'
             extra_config.replace_trigger: '- (Optional) Triggers replacement of resource whenever it changes.'
             extra_config.resource_pool_id: '- (Required) The managed object reference ID of the resource pool in which to place the virtual machine. See the Virtual Machine Migration section for more information on modifying this value.'
@@ -3426,7 +3426,7 @@ resources:
             ipv6_gateway: '- (Optional) The IPv6 default gateway when using network_interface customization on the virtual machine.'
             key: '- The ID of the device within the virtual machine.'
             latency_sensitivity: '- (Optional) Controls the scheduling delay of the virtual machine. Use a higher sensitivity for applications that require lower latency, such as VOIP, media player applications, or applications that require frequent access to mouse or keyboard devices. One of low, normal, medium, or high.'
-            linked_clone: ', the size, thin_provisioned, and eagerly_scrub settings for each disk must be an exact match to the individual disk''s counterpart in the source vsphere.'
+            linked_clone: ', the size, thin_provisioned, and eagerly_scrub settings for each disk must be an exact match to the individual disk''s counterpart in the source template.'
             linux_options.domain: '- (Required) The domain name for this machine. This, along with host_name, make up the FQDN of the virtual machine.'
             linux_options.host_name: '- (Required) The host name for this machine. This, along with domain, make up the FQDN of the virtual machine.'
             linux_options.hw_clock_utc: '- (Optional) Tells the operating system that the hardware clock is set to UTC. Default: true.'
@@ -3477,9 +3477,9 @@ resources:
             run_tools_scripts_before_guest_standby: '- (Optional) Enable pre-standby scripts to run when VMware Tools is installed. Default: true.'
             sata_controller_count: '- (Optional) The number of SATA controllers that the virtual machine. This directly affects the number of disks you can add to the virtual machine and the maximum disk unit number. Note that lowering this value does not remove controllers. Default: 0.'
             scsi_controller_count: '- (Optional) The number of SCSI controllers on the virtual machine. This setting directly affects the number of disks you can add to the virtual machine and the maximum disk unit number. Note that lowering this value does not remove controllers. Default: 1.'
-            scsi_type: is set to an exact match of the vsphere's controller set. For maximum compatibility, make sure the SCSI controllers on the source vsphere are all the same type.
+            scsi_type: is set to an exact match of the template's controller set. For maximum compatibility, make sure the SCSI controllers on the source template are all the same type.
             shutdown_wait_timeout: '- (Optional) The amount of time, in minutes, to wait for a graceful guest shutdown when making necessary updates to the virtual machine. If force_power_off is set to true, the virtual machine will be forced to power-off after the timeout, otherwise an error is returned. Default: 3 minutes.'
-            size: of a virtual disk must be at least the same size as its counterpart disk in the source vsphere.
+            size: of a virtual disk must be at least the same size as its counterpart disk in the source template.
             sriov: .
             swap_placement_policy: '- (Optional) The swap file placement policy for the virtual machine. One of inherit, hostLocal, or vmDirectory. Default: inherit.'
             sync_time_with_host: '- (Optional) Enable the guest operating system to synchronization its clock with the host when the virtual machine is powered on or resumed. Requires VMware Tools to be installed. Default: true.'
@@ -3489,7 +3489,7 @@ resources:
             tools_upgrade_policy: '- (Optional) Enable automatic upgrade of the VMware Tools version when the virtual machine is rebooted. If necessary, VMware Tools is upgraded to the latest version supported by the host on which the virtual machine is running. Requires VMware Tools to be installed. One of manual or upgradeAtPowerCycle. Default: manual.'
             "true": to false.
             uuid: '- The UUID of the virtual disk VMDK file. This is used to track the virtual disk on the virtual machine.'
-            vapp_transport: '- Computed value which is only valid for cloned virtual machines. A list of vApp transport methods supported by the source virtual machine or vsphere.'
+            vapp_transport: '- Computed value which is only valid for cloned virtual machines. A list of vApp transport methods supported by the source virtual machine or template.'
             vbs_enabled: '- (Optional) Enable Virtualization Based Security. Requires firmware to be efi. In addition, vvtd_enabled, nested_hv_enabled, and efi_secure_boot_enabled must all have a value of true. Default: false.'
             vmware_tools_status: '- The state of  VMware Tools in the guest. This will determine the proper course of action for some device operations.'
             vmx_path: '- The path of the virtual machine configuration file on the datastore in which the virtual machine is placed.'
